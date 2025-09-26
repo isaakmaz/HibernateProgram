@@ -1,0 +1,41 @@
+package com.example.userservice.util; // Убедись, что пакет правильный
+
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HibernateUtil {
+    private static final Logger logger = LoggerFactory.getLogger(HibernateUtil.class);
+    private static StandardServiceRegistry standardServiceRegistry;
+    private static SessionFactory sessionFactory;
+
+    static {
+        if (sessionFactory == null) {
+            try {
+                // Create StandardServiceRegistry
+                standardServiceRegistry = new StandardServiceRegistryBuilder()
+                        .configure()
+                        .build();
+                // Create MetadataSources
+                MetadataSources metadataSources = new MetadataSources(standardServiceRegistry);
+                // Create Metadata
+                Metadata metadata = metadataSources.getMetadataBuilder().build();
+                // Create SessionFactory
+                sessionFactory = metadata.getSessionFactoryBuilder().build();
+            } catch (Exception e) {
+                logger.error("Ошибка при создании SessionFactory", e);
+                if (standardServiceRegistry != null) {
+                    StandardServiceRegistryBuilder.destroy(standardServiceRegistry);
+                }
+            }
+        }
+    }
+    //Utility method to return SessionFactory
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+}
