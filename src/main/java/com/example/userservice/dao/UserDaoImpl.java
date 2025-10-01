@@ -1,8 +1,8 @@
 package com.example.userservice.dao;
 
 import com.example.userservice.entity.User;
-import com.example.userservice.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +11,17 @@ import java.util.Optional;
 
 public class UserDaoImpl implements UserDao {
     private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+    private final SessionFactory sessionFactory;
+
+    // Конструктор
+    public UserDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public User save(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             // Сохранение user которого передаем
@@ -34,7 +40,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Optional<User> findById(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = this.sessionFactory.openSession()) {
             User user = session.get(User.class, id);
             return Optional.ofNullable(user);
         } catch (Exception e) {
@@ -47,7 +53,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             session.merge(user);
@@ -64,7 +70,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
             session.remove(user);
