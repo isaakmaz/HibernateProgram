@@ -7,6 +7,8 @@ import com.example.userservice.entity.User;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.example.userservice.service.UserService;
+import com.example.userservice.service.UserServiceImpl;
 import com.example.userservice.util.HibernateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final UserDao userDao = new UserDaoImpl(HibernateUtil.getSessionFactory());
+    private static final UserService userService = new UserServiceImpl(new UserDaoImpl(HibernateUtil.getSessionFactory()));
 
 
     public static void main(String[] args) {
@@ -60,7 +62,7 @@ public class Main {
                     newUser.setAge(ageAsInt);
                     newUser.setCreatedAt(java.time.LocalDateTime.now());
 
-                    userDao.save(newUser);
+                    userService.save(newUser);
 
                     logger.info("Пользователь успешно создан: " + newUser);
                     break;
@@ -74,7 +76,7 @@ public class Main {
                         logger.warn("Неверный формат id. Введите целое число. Операция создания отменена.");
                         break;
                     }
-                    Optional<User> foundUser = userDao.findById(idAsLong);
+                    Optional<User> foundUser = userService.findById(idAsLong);
                     if (foundUser.isPresent()) {
                         logger.info("Найденный пользователь: " + foundUser.get());
                     } else {
@@ -91,7 +93,7 @@ public class Main {
                         logger.warn("Неверный формат ID. Операция отменена.");
                         break;
                     }
-                    Optional<User> userToUpdateOptional = userDao.findById(idToUpdate);
+                    Optional<User> userToUpdateOptional = userService.findById(idToUpdate);
                     if (userToUpdateOptional.isEmpty()) {
                         logger.warn("Пользователь с ID " + idToUpdate + " не найден.");
                         break;
@@ -113,7 +115,7 @@ public class Main {
                             logger.warn("Неверный формат возраста. Возраст не будет изменен.");
                         }
                     }
-                    userDao.update(userToUpdate);
+                    userService.update(userToUpdate);
                     logger.info("Пользователь обновлен: " + userToUpdate);
                     break;
 
@@ -127,11 +129,11 @@ public class Main {
                         logger.warn("Неверный формат ID. Операция отменена.");
                         break;
                     }
-                    Optional<User> userToDeleteOptional = userDao.findById(idToDelete);
+                    Optional<User> userToDeleteOptional = userService.findById(idToDelete);
                     if (userToDeleteOptional.isEmpty()) {
                         logger.warn("Пользователь с ID " + idToDelete + " не найден.");
                     } else {
-                        userDao.delete(userToDeleteOptional.get());
+                        userService.delete(userToDeleteOptional.get());
                         logger.info("Пользователь с ID " + idToDelete + " успешно удален.");
                     }
                     break;
