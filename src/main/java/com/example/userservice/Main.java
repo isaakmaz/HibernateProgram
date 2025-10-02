@@ -124,8 +124,9 @@ public class Main {
 
                 case "exit":
                     logger.info("Завершение работы программы.");
-                    scanner.close(); // закрываем scanner перед выходом
-                    return; // Выходим из метода main, программа завершается
+                    scanner.close();
+                    HibernateUtil.shutdown();
+                    return;
 
                 default:
                     logger.warn("Неизвестная команда. Пожалуйста, используйте create, read, update, delete или exit.");

@@ -13,6 +13,12 @@ public class HibernateUtil {
     private static StandardServiceRegistry standardServiceRegistry;
     private static SessionFactory sessionFactory;
 
+    public static void shutdown() {
+        if (standardServiceRegistry != null) {
+            StandardServiceRegistryBuilder.destroy(standardServiceRegistry);
+        }
+    }
+
     static {
         if (sessionFactory == null) {
             try {
