@@ -54,7 +54,7 @@ class UserDaoIntegrationTest {
     }
 
     @BeforeEach
-    //  создал свежий экземпляр UserDao
+        //  создал свежий экземпляр UserDao
     void init() {
         userDao = new UserDaoImpl(sessionFactory);
     }
@@ -83,4 +83,56 @@ class UserDaoIntegrationTest {
         Assertions.assertEquals("Test User", foundUser.getName());
         Assertions.assertEquals("test@example.com", foundUser.getEmail());
     }
+
+    @Test
+    void shouldUpdateUser() {
+        User newUser = new User();
+        newUser.setName("Оригинал");
+        newUser.setEmail("test12@example.com");
+        newUser.setAge(30);
+        newUser.setCreatedAt(LocalDateTime.now());
+
+        userDao.save(newUser);
+
+        newUser.setName("Обновлено");
+
+        newUser.setAge(31);
+
+        userDao.update(newUser);
+
+        // Вытаскиваю свежую копию из БД
+        Optional<User> updatedUserOptional = userDao.findById(newUser.getId());
+        // пользователь нашелся?
+        Assertions.assertTrue(updatedUserOptional.isPresent());
+
+        User updatedUser = updatedUserOptional.get();
+        Assertions.assertEquals("Обновлено", updatedUser.getName());
+        Assertions.assertEquals(31, updatedUser.getAge());
+    }
+
+    @Test
+    void shouldDeleteUser() {
+        // Подготовка данных
+        User newUser = new User();
+        newUser.setName("Елизаветта Карпова");
+        newUser.setEmail("test45@example.com");
+        newUser.setAge(21);
+        newUser.setCreatedAt(LocalDateTime.now());
+
+        userDao.save(newUser);
+
+        // Проверяем, что ID был присвоен после сохранения
+        Assertions.assertNotNull(newUser.getId());
+
+        Optional<User> foundUserOptional = userDao.findById(newUser.getId());
+
+        userDao.delete(newUser);
+
+        // Попробуем найти удаленного пользователя
+        Optional<User> deletedUserOptional = userDao.findById(newUser.getId());
+        // пользователь нашелся?
+        Assertions.assertTrue(deletedUserOptional.isEmpty());
+
+    }
+
 }
