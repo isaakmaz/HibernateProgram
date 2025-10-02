@@ -28,13 +28,27 @@ public class Main {
                 case "create":
                     logger.info("Введите Имя и Фамилию:");
                     String name = scanner.nextLine();
+                    if (name.isBlank()) {
+                        logger.warn("Имя не может быть пустым. Операция отменена.");
+                        break;
+                    }
+
                     logger.info("Введите email:");
                     String email = scanner.nextLine();
+                    if (email.isBlank() || !email.contains("@") || email.startsWith("@") || email.endsWith("@")) {
+                        logger.warn("Неверный формат email. Операция отменена.");
+                        break;
+                    }
+
                     logger.info("Введите возраст:");
-                    String age = scanner.nextLine();
+                    String ageString = scanner.nextLine();
                     int ageAsInt;
                     try {
-                        ageAsInt = Integer.parseInt(age);
+                        ageAsInt = Integer.parseInt(ageString);
+                        if (ageAsInt < 0 || ageAsInt > 120) {
+                            logger.warn("Возраст должен быть в разумных пределах (от 0 до 120). Операция отменена.");
+                            break;
+                        }
                     } catch (NumberFormatException e) {
                         logger.warn("Неверный формат возраста. Введите целое число. Операция создания отменена.");
                         break;
@@ -43,7 +57,7 @@ public class Main {
                     User newUser = new User();
                     newUser.setName(name);
                     newUser.setEmail(email);
-                    newUser.setAge(ageAsInt); // Здесь должно быть число
+                    newUser.setAge(ageAsInt);
                     newUser.setCreatedAt(java.time.LocalDateTime.now());
 
                     userDao.save(newUser);
