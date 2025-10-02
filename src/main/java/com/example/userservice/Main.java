@@ -1,6 +1,5 @@
 package com.example.userservice;
 
-import com.example.userservice.dao.UserDao;
 import com.example.userservice.dao.UserDaoImpl;
 import com.example.userservice.entity.User;
 
@@ -69,7 +68,7 @@ public class Main {
                 case "read":
                     logger.info("Введите ID пользователя для поиска:");
                     String idString = scanner.nextLine();
-                    Long idAsLong;
+                    long idAsLong;
                     try {
                         idAsLong = Long.parseLong(idString);
                     } catch (NumberFormatException e) {

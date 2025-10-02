@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Entity
 @Table (name = "users")
 public class User {

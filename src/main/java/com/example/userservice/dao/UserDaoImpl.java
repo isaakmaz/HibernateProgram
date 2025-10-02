@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao {
             transaction = session.beginTransaction();
 
             // Использую merge и сохраняю результат работы
-            savedUser = (User) session.merge(user);
+            User savedUser = session.merge(user);
 
             transaction.commit();
         } catch (Exception e) {

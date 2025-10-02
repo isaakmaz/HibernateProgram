@@ -124,8 +124,6 @@ class UserDaoIntegrationTest {
         // Проверяем, что ID был присвоен после сохранения
         Assertions.assertNotNull(newUser.getId());
 
-        Optional<User> foundUserOptional = userDao.findById(newUser.getId());
-
         userDao.delete(newUser);
 
         // Попробуем найти удаленного пользователя
