@@ -21,11 +21,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User save(User user) {
         Transaction transaction = null;
+        User savedUser = null; // Создаю переменную для результата
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
 
-            // Сохранение user которого передаем
-            session.persist(user);
+            // Использую merge и сохраняю результат работы
+            savedUser = (User) session.merge(user);
 
             transaction.commit();
         } catch (Exception e) {
@@ -34,11 +35,10 @@ public class UserDaoImpl implements UserDao {
             }
             logger.error("Ошибка при сохранении пользователя " + user, e);
         }
-        // Возвращаем user, но теперь внутри будет id
-        return user;
+        return savedUser;
     }
 
-    @Override
+        @Override
     public Optional<User> findById(Long id) {
         try (Session session = this.sessionFactory.openSession()) {
             User user = session.get(User.class, id);
