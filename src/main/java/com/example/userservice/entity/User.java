@@ -83,13 +83,17 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(email, user.email);
+        // Если ID null, то объекты не равны
+        if (this.id == null || user.id == null) return false;
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(email);
+        // Использовать хэш-код от ID, если он есть, иначе - константу.
+        return id != null ? Objects.hashCode(id) : 31;
     }
 }
