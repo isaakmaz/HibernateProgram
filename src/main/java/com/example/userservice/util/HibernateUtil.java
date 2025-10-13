@@ -1,4 +1,4 @@
-package com.example.userservice.util; // Убедись, что пакет правильный
+package com.example.userservice.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -22,15 +22,12 @@ public class HibernateUtil {
     static {
         if (sessionFactory == null) {
             try {
-                // Create StandardServiceRegistry
+                // Создаю сервис запуска 1 раз
                 standardServiceRegistry = new StandardServiceRegistryBuilder()
                         .configure()
                         .build();
-                // Create MetadataSources
                 MetadataSources metadataSources = new MetadataSources(standardServiceRegistry);
-                // Create Metadata
                 Metadata metadata = metadataSources.getMetadataBuilder().build();
-                // Create SessionFactory
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
             } catch (Exception e) {
                 logger.error("Ошибка при создании SessionFactory", e);
@@ -40,7 +37,6 @@ public class HibernateUtil {
             }
         }
     }
-    //Utility method to return SessionFactory
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
